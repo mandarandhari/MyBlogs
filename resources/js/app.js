@@ -14,6 +14,25 @@ Vue.use(VueRouter);
 
 import App from './components/App.vue';
 
+import moment from 'moment';
+import VueProgressBar from 'vue-progressbar';
+
+const options = {
+    color: '#fff',
+    failedColor: '#874b4b',
+    thickness: '5px',
+    transition: {
+        speed: '0.2s',
+        opacity: '0.6s',
+        termination: 300
+    },
+    autoRevert: true,
+    location: 'top',
+    inverse: false
+};
+
+Vue.use(VueProgressBar, options);
+
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue
@@ -27,7 +46,8 @@ import App from './components/App.vue';
 
 const routes = [
     { path: '/home', component: require('./components/Home.vue').default },
-    // { path: '/bar', component: Bar }
+    { path: '/about', component: require('./components/About.vue').default },
+    { path: '/posts', component: require('./components/Posts.vue').default }
 ];
 
 const router = new VueRouter({
@@ -36,6 +56,10 @@ const router = new VueRouter({
 });
 
 Vue.component('example-component', require('./components/ExampleComponent.vue').default);
+
+Vue.filter('dateFormat', (date) => {
+    return moment(date).format('MMMM D, YYYY');
+})
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

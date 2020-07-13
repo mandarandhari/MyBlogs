@@ -2,7 +2,7 @@
     <div>
         <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
             <div class="container">
-                <a class="navbar-brand" href="/startbootstrap-clean-blog-jekyll/">Clean Blog</a>
+                <a class="navbar-brand" href="/startbootstrap-clean-blog-jekyll/">MyBlogs</a>
                 <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
                 Menu
                 <i class="fa fa-bars"></i>
@@ -10,13 +10,13 @@
                 <div class="collapse navbar-collapse" id="navbarResponsive">
                     <ul class="navbar-nav ml-auto">
                         <li class="nav-item">
-                            <a class="nav-link" href="/startbootstrap-clean-blog-jekyll/">Home</a>
+                            <router-link class="nav-link" to="/home">Home</router-link>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/startbootstrap-clean-blog-jekyll/about">About</a>
+                            <router-link class="nav-link" to="/about">About</router-link>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/startbootstrap-clean-blog-jekyll/posts">Posts</a>
+                            <router-link class="nav-link" to="/posts">Posts</router-link>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="/startbootstrap-clean-blog-jekyll/contact">Contact</a>
@@ -28,7 +28,7 @@
 
 
         <router-view></router-view>
-
+        <vue-progress-bar></vue-progress-bar>
 
         <!-- Footer -->
 
@@ -93,7 +93,7 @@
 <script>
     export default {
         mounted() {
-            console.log('Component mounted.')
+            
         }
     }
 </script>

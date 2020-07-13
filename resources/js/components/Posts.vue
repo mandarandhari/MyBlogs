@@ -1,17 +1,15 @@
 <template>
-    <div>
+    <div id="main-div">
         <!-- Page Header -->
 
-        <header class="masthead" style="background-image: url('/img/bg-index.jpg')">
+        <header class="masthead" style="background-image: url('/img/bg-about.jpg')">
         
             <div class="overlay"></div>
             <div class="container">
             <div class="row">
                 <div class="col-lg-8 col-md-10 mx-auto">
                 <div class="page-heading">
-                    <h1>Clean Blog</h1>
-                    
-                    <span class="subheading">A Blog Theme by Start Bootstrap</span>
+                    <h1>Posts</h1>
                     
                 </div>
                 </div>
@@ -37,8 +35,11 @@
 
                     <hr>   
                     <!-- Pager -->
-                    <div class="clearfix">
-                        <a class="btn btn-primary float-right" href="/startbootstrap-clean-blog-jekyll/posts">View All Posts &rarr;</a>
+                    <div v-if="prevUrl != ''">
+                        <button class="btn btn-primary float-left" @click.prevent="getArticles(prevUrl)">Newer Posts &larr;</button>
+                    </div>
+                    <div v-if="nextUrl != ''">
+                        <button class="btn btn-primary float-right" @click.prevent="getArticles(nextUrl)">Older Posts &rarr;</button>
                     </div>
 
                 </div>
@@ -51,14 +52,35 @@
     export default {
         data() {
             return {
-                articles: {}
+                articles: {},
+                prevUrl: '',
+                nextUrl: ''
             }
         },
         methods: {
-            getLatestArticles() {
-                axios.get('/api/getLatestArticles')
+            getArticles(url = '') {
+                let param = url.length ? '?' + url : '';
+
+                axios.get('/api/getArticles' + param)
                 .then((response) => {
-                    this.articles = response.data.articles;
+                    this.nextUrl = '';
+                    this.prevUrl = '';
+
+                    this.articles = response.data.articles.data;
+
+                    if (response.data.articles.next_page_url != null) {
+                        this.nextUrl = response.data.articles.next_page_url.split('?')[1];
+                    }
+
+                    if (response.data.articles.prev_page_url != null) {
+                        this.prevUrl = response.data.articles.prev_page_url.split('?')[1];
+                    }
+
+                    if (param.length) {
+                        $('html, body').animate({
+                            scrollTop: $('#main-div').offset().top - 50
+                        }, 'slow');
+                    }
                 })
                 .catch(() => {
 
@@ -66,7 +88,7 @@
             }
         },
         mounted() {
-            this.getLatestArticles();
+            this.getArticles();
             this.$Progress.finish();
         },
         created() {

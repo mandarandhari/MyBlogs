@@ -16,3 +16,6 @@ use Illuminate\Http\Request;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::get('/getLatestArticles', 'API\ArticleController@get_latest_articles');
+Route::get('/getArticles', 'API\ArticleController@get_articles');
