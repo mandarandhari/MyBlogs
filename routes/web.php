@@ -19,4 +19,5 @@ Auth::routes();
 
 // Route::get('/home', 'HomeController@index')->name('home');
 
-Route::get('/{url}', 'HomeController@index')->where('{url}', '([A-z0-9\s\/._+-]+)?');
+Route::get('/{url}', 'HomeController@index')->where('{url}', '([A-z0-9\/._+-]+)?');
+Route::get('/blog/{url}', 'HomeController@index')->where('{url}', '([A-z0-9\/._+-]+)?');

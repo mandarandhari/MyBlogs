@@ -32,7 +32,7 @@
     </div>
 
     <script src="/js/app.js"></script>
-    <!-- <script src="/startbootstrap-clean-blog-jekyll/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script> -->
+    
     <script src="/js/clean-blog.min.js"></script>
 
     <script src="/js/scripts.js"></script>

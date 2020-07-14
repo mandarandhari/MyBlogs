@@ -25,4 +25,26 @@ class ArticleController extends Controller
             'articles' => $articles
         ]);
     }
+
+    public function get_article_by_url($url)
+    {
+        $article = Article::where('url', '=', $url)->first(['id', 'title', 'url', 'description', 'content', 'meta_title', 'meta_description', 'banner', 'created_at']);
+        
+        $prev_article = Article::where('id', '>', $article->id)->first(['id', 'title', 'url']);
+
+        $next_article = Article::where('id', '<', $article->id)->first(['id', 'title', 'url']);
+
+        if (isset($article->id)) {
+            return response()->json([
+                'success' => TRUE,
+                'article' => $article,
+                'prevArticle' => $prev_article,
+                'nextArticle' => $next_article
+            ]);
+        } else {
+            return response()->json([
+                'success' => FALSE
+            ]);
+        }
+    }
 }

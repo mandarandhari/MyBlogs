@@ -48,7 +48,8 @@ const routes = [
     { path: '/home', component: require('./components/Home.vue').default },
     { path: '/about', component: require('./components/About.vue').default },
     { path: '/posts', component: require('./components/Posts.vue').default },
-    { path: '/contact', component: require('./components/Contact.vue').default }
+    { path: '/contact', component: require('./components/Contact.vue').default },
+    { path: '/blog/:blogUrl', component: require('./components/Post.vue').default }
 ];
 
 const router = new VueRouter({

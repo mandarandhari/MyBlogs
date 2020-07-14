@@ -27,7 +27,7 @@
         </nav>
 
 
-        <router-view></router-view>
+        <router-view :key="$route.fullPath"></router-view>
         <vue-progress-bar></vue-progress-bar>
 
         <!-- Footer -->
