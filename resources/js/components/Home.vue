@@ -6,16 +6,16 @@
         
             <div class="overlay"></div>
             <div class="container">
-            <div class="row">
-                <div class="col-lg-8 col-md-10 mx-auto">
-                <div class="page-heading">
-                    <h1>Clean Blog</h1>
-                    
-                    <span class="subheading">A Blog Theme by Start Bootstrap</span>
-                    
+                <div class="row">
+                    <div class="col-lg-8 col-md-10 mx-auto">
+                        <div class="page-heading">
+                            <h1>MyBlogs</h1>
+                            
+                            <span class="subheading">A Blog Theme by Start Bootstrap</span>
+                            
+                        </div>
+                    </div>
                 </div>
-                </div>
-            </div>
             </div>
         </header>
 
@@ -38,7 +38,7 @@
                     <hr>   
                     <!-- Pager -->
                     <div class="clearfix">
-                        <a class="btn btn-primary float-right" href="/startbootstrap-clean-blog-jekyll/posts">View All Posts &rarr;</a>
+                        <router-link class="btn btn-primary float-right" to="/posts">View All Posts &rarr;</router-link>
                     </div>
 
                 </div>

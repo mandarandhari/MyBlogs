@@ -19,7 +19,7 @@
                             <router-link class="nav-link" to="/posts">Posts</router-link>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/startbootstrap-clean-blog-jekyll/contact">Contact</a>
+                            <router-link class="nav-link" to="/contact">Contact</router-link>
                         </li>
                     </ul>
                 </div>

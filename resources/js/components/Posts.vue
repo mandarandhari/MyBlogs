@@ -76,11 +76,9 @@
                         this.prevUrl = response.data.articles.prev_page_url.split('?')[1];
                     }
 
-                    if (param.length) {
-                        $('html, body').animate({
-                            scrollTop: $('#main-div').offset().top - 50
-                        }, 'slow');
-                    }
+                    $('html, body').animate({
+                        scrollTop: $('#main-div').offset().top - 50
+                    }, 'slow');
                 })
                 .catch(() => {
 

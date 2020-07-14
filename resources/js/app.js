@@ -47,7 +47,8 @@ Vue.use(VueProgressBar, options);
 const routes = [
     { path: '/home', component: require('./components/Home.vue').default },
     { path: '/about', component: require('./components/About.vue').default },
-    { path: '/posts', component: require('./components/Posts.vue').default }
+    { path: '/posts', component: require('./components/Posts.vue').default },
+    { path: '/contact', component: require('./components/Contact.vue').default }
 ];
 
 const router = new VueRouter({
