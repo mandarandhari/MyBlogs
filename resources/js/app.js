@@ -9,13 +9,14 @@ require('./bootstrap');
 window.Vue = require('vue');
 
 import VueRouter from 'vue-router';
-
-Vue.use(VueRouter);
-
+import Vuex from 'vuex';
 import App from './components/App.vue';
-
 import moment from 'moment';
 import VueProgressBar from 'vue-progressbar';
+import store from './store';
+
+Vue.use(VueRouter);
+Vue.use(Vuex);
 
 const options = {
     color: '#fff',
@@ -49,7 +50,10 @@ const routes = [
     { path: '/about', component: require('./components/About.vue').default },
     { path: '/posts', component: require('./components/Posts.vue').default },
     { path: '/contact', component: require('./components/Contact.vue').default },
-    { path: '/blog/:blogUrl', component: require('./components/Post.vue').default }
+    { path: '/blog/:blogUrl', component: require('./components/Post.vue').default },
+    { path: '/signup', component: require('./components/auth/Signup.vue').default },
+    { path: '/signin', component: require('./components/auth/Signin.vue').default },
+    { path: '/profile', component: require('./components/auth/Profile.vue').default }
 ];
 
 const router = new VueRouter({
@@ -72,5 +76,6 @@ Vue.filter('dateFormat', (date) => {
 const app = new Vue({
     el: '#app',
     router,
+    store,
     render: h => h(App)
 });

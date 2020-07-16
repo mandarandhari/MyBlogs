@@ -21,6 +21,16 @@
                         <li class="nav-item">
                             <router-link class="nav-link" to="/contact">Contact</router-link>
                         </li>
+                        <li class="nav-item" v-if="!$store.state.isLoggedIn">
+                            <router-link class="nav-link" to="/signin">Signin</router-link>
+                        </li>
+                        <li class="nav-item dropdown" v-if="$store.state.isLoggedIn">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ $store.state.customer.name }}</a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <router-link to="/profile" class="dropdown-item">Profile</router-link>
+                                <a href="#" class="dropdown-item" @click.prevent="logout">Logout</a>
+                            </div>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -92,6 +102,29 @@
 
 <script>
     export default {
+        methods: {
+            logout() {
+                axios.post('/api/logout', {
+                    
+                }, {
+                    headers: {
+                        'Authorization': 'Bearer ' + this.$store.state.token,
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then((response) => {
+                    if (response.data.success) {
+                        this.$store.commit('CustomerLoggedOut');
+                    } 
+
+                    this.$router.push('/home');
+                })
+                .catch((errors) => {
+
+                });
+            }
+        },
         mounted() {
             
         }

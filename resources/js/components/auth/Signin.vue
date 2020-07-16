@@ -1,0 +1,94 @@
+<template>
+    <div>
+        <!-- Page Header -->
+
+        <header class="masthead" style="background-image: url('/img/bg-login.jpg')">
+        
+            <div class="overlay"></div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-8 col-md-10 mx-auto">
+                        <div class="page-heading">
+                            <h1>Signin</h1>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-md-10 mx-auto">
+                    <div id="error" v-if="error">
+                        <div class='alert alert-danger'>
+                            <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>
+                            <strong>{{ errorMsg }}</strong>
+                        </div>
+                    </div>
+                    <form name="signin" id="signinForm" novalidate @submit.prevent="signin">
+                        <div class="control-group">
+                            <div class="form-group floating-label-form-group controls">
+                                <label>Email Address</label>
+                                <input type="email" class="form-control" placeholder="Email Address" id="email" v-model="email" required>
+                                <p class="help-block text-danger" v-if="errors.email">{{ errors.email[0] }}</p>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <div class="form-group col-xs-12 floating-label-form-group controls">
+                                <label>password</label>
+                                <input type="password" class="form-control" placeholder="password" id="Password" v-model="password" required>
+                                <p class="help-block text-danger" v-if="errors.password">{{ errors.password[0] }}</p>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary" id="signinButton">Sign in</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+
+<script>
+    export default {
+        data() {
+            return {
+                email: '',
+                password: '',
+                errors: {},
+                error: false,
+                errorMsg: ''
+            }
+        },
+        methods: {
+            signin() {
+                axios.post('/api/signin', {
+                    email: this.email,
+                    password: this.password
+                })
+                .then((response) => {
+                    if (response.data.success) {
+                        this.$store.commit('CustomerLoggedIn', response.data);
+                        this.$router.push('/home');
+                    } else {
+                        this.error = true;
+                        this.errorMsg = response.data.message;
+                    }
+                })
+                .catch((errors) => {
+                    if (errors.response.status == 422) {
+                        this.errors = errors.response.data.errors;
+                    }
+                });
+            }
+        },
+        mounted() {
+            this.$Progress.finish();
+        },
+        created() {
+            this.$Progress.start();
+        }
+    }
+</script>

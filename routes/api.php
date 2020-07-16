@@ -21,3 +21,10 @@ Route::get('/getLatestArticles', 'API\ArticleController@get_latest_articles');
 Route::get('/getArticles', 'API\ArticleController@get_articles');
 Route::post('/addContact', 'API\ContactController@add_contact');
 Route::get('/getArticle/{url}', 'API\ArticleController@get_article_by_url')->where('{url}', '([A-z0-9-+_.\/]+)?');
+Route::post('/signup', 'API\AuthController@signup');
+Route::post('/signin', 'API\AuthController@signin');
+
+Route::middleware('auth:api')->group(function() {
+    Route::post('/updateProfile', 'API\AuthController@update_profile');
+    Route::post('/logout', 'API\AuthController@logout');
+});
