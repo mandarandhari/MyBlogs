@@ -2656,23 +2656,33 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   methods: {
-    signup: function signup() {
+    updateProfile: function updateProfile() {
       var _this = this;
 
       axios.post('/api/updateProfile', {
-        headers: {
-          'Authorization': 'Bearer ' + this.$store.state.token,
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        }
-      }, {
         name: this.name,
         email: this.email,
         phone: this.phone,
         password: this.password,
         confirmPassword: this.confirmPassword
+      }, {
+        headers: {
+          'Authorization': 'Bearer ' + this.$store.state.token,
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        }
       }).then(function (response) {
-        if (repsonse.data.success) {// this.$router.push('/profile');
+        _this.success = false;
+        _this.error = false;
+
+        if (response.data.success) {
+          _this.success = true;
+          _this.successMsg = response.data.message;
+
+          _this.$store.commit('updateProfile', response.data);
+        } else {
+          _this.error = true;
+          _this.errorMsg = response.data.message;
         }
       })["catch"](function (errors) {
         if (errors.response.status == 422) {
@@ -2700,6 +2710,11 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
 //
 //
 //
@@ -2805,6 +2820,10 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
 //
 //
 //
@@ -61164,7 +61183,7 @@ var staticRenderFns = [
           staticClass: "btn btn-primary",
           attrs: { type: "submit", id: "profileButton" }
         },
-        [_vm._v("Sign up")]
+        [_vm._v("Update")]
       )
     ])
   }
@@ -61324,6 +61343,26 @@ var render = function() {
               _vm._v(" "),
               _vm._m(1)
             ]
+          )
+        ])
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "row" }, [
+        _c("div", { staticClass: "col-lg-8 col-md-10 mx-auto text-center" }, [
+          _c(
+            "p",
+            [
+              _vm._v("Don't have account? "),
+              _c(
+                "router-link",
+                {
+                  staticStyle: { color: "#3490dc !important" },
+                  attrs: { to: "/signup" }
+                },
+                [_vm._v("Sign up")]
+              )
+            ],
+            1
           )
         ])
       ])
@@ -61664,6 +61703,26 @@ var render = function() {
               _vm._v(" "),
               _vm._m(1)
             ]
+          )
+        ])
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "row" }, [
+        _c("div", { staticClass: "col-lg-8 col-md-10 mx-auto text-center" }, [
+          _c(
+            "p",
+            [
+              _vm._v("Already have account? "),
+              _c(
+                "router-link",
+                {
+                  staticStyle: { color: "#3490dc !important" },
+                  attrs: { to: "/signin" }
+                },
+                [_vm._v("Sign in")]
+              )
+            ],
+            1
           )
         ])
       ])
@@ -78214,7 +78273,6 @@ window.Vue = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.
 
 
 Vue.use(vue_router__WEBPACK_IMPORTED_MODULE_0__["default"]);
-Vue.use(vuex__WEBPACK_IMPORTED_MODULE_1__["default"]);
 var options = {
   color: '#fff',
   failedColor: '#874b4b',
@@ -78268,6 +78326,17 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_0__["default"]({
   routes: routes,
   // short for `routes: routes`
   mode: 'history'
+});
+router.beforeEach(function (to, from, next) {
+  if ((to.path == '/signin' || to.path == '/signup') && _store__WEBPACK_IMPORTED_MODULE_5__["default"].state.isLoggedIn) {
+    next('/home');
+  }
+
+  if (to.path == '/profile' && !_store__WEBPACK_IMPORTED_MODULE_5__["default"].state.isLoggedIn) {
+    next('/home');
+  }
+
+  next();
 });
 Vue.component('example-component', __webpack_require__(/*! ./components/ExampleComponent.vue */ "./resources/js/components/ExampleComponent.vue")["default"]);
 Vue.filter('dateFormat', function (date) {

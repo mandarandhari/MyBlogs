@@ -78,4 +78,49 @@ class AuthController extends Controller
             ]);
         }        
     }
+
+    public function update_profile(Request $request) 
+    {
+        if ( isset( Auth::guard('api')->user()->id ) ) {
+            $validation_array = [
+                'name' => ['required', 'string', 'max:255'],
+                'phone' => ['required', 'string', 'max:255']
+            ];
+
+            if ( $request->password != "" || $request->confirmPassword != "" ) {
+                $validation_array['password'] = ['required', 'alpha_num', 'min:8'];
+                $validation_array['confirmPassword'] = ['required', 'alpha_num', 'same:password'];
+            }
+
+            $request->validate($validation_array);
+
+            $customer = Customer::find(Auth::guard('api')->user()->id);
+
+            $customer->name = $request->name;
+            $customer->email = $request->email;
+            $customer->phone = $request->phone;
+            
+            if ( $request->password != "" ) {
+                $customer->password = Hash::make($request->password);
+            }
+
+            if ( $customer->update() ) {
+                return response()->json([
+                    'success' => TRUE,
+                    'customer' => $customer,
+                    'message' => "Profile updated"
+                ]);
+            } else {
+                return response()->json([
+                    'success' => FALSE,
+                    'message' => "An unexpected error occured"
+                ]); 
+            }            
+        } else {
+            return response()->json([
+                'success' => FALSE,
+                'message' => "You are not authorized"
+            ]);
+        }
+    }
 }

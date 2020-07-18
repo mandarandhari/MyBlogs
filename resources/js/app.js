@@ -16,7 +16,6 @@ import VueProgressBar from 'vue-progressbar';
 import store from './store';
 
 Vue.use(VueRouter);
-Vue.use(Vuex);
 
 const options = {
     color: '#fff',
@@ -60,6 +59,18 @@ const router = new VueRouter({
     routes, // short for `routes: routes`
     mode: 'history'
 });
+
+router.beforeEach((to, from, next) => {
+    if ( ( to.path == '/signin' || to.path == '/signup' ) && store.state.isLoggedIn ) {
+        next('/home');
+    }
+
+    if ( to.path == '/profile' && !store.state.isLoggedIn ) {
+        next('/home');
+    }
+
+    next();
+})
 
 Vue.component('example-component', require('./components/ExampleComponent.vue').default);
 

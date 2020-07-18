@@ -70,7 +70,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <button type="submit" class="btn btn-primary" id="profileButton">Sign up</button>
+                            <button type="submit" class="btn btn-primary" id="profileButton">Update</button>
                         </div>
                     </form>
                 </div>
@@ -96,23 +96,32 @@
             }
         },
         methods: {
-            signup() {
+            updateProfile() {
                 axios.post('/api/updateProfile', {
-                    headers: {
-                        'Authorization': 'Bearer ' + this.$store.state.token,
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    }
-                },{
                     name: this.name,
                     email: this.email,
                     phone: this.phone,
                     password: this.password,
                     confirmPassword: this.confirmPassword
+                }, {
+                    headers: {
+                        'Authorization': 'Bearer ' + this.$store.state.token,
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    }
                 })
                 .then((response) => {
-                    if (repsonse.data.success) {
-                        // this.$router.push('/profile');
+                    this.success = false;
+                    this.error = false;
+
+                    if (response.data.success) {
+                        this.success = true;
+                        this.successMsg = response.data.message;
+                        
+                        this.$store.commit('updateProfile', response.data);
+                    } else {
+                        this.error = true;
+                        this.errorMsg = response.data.message;
                     }
                 })
                 .catch((errors) => {
