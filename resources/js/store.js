@@ -25,6 +25,10 @@ const Store = new Vuex.Store({
             state.isLoggedIn = false;
             localStorage.removeItem('token');
             localStorage.removeItem('customer');
+
+            if (localStorage.getItem('articleUrl') != null) {
+                localStorage.removeItem('articleUrl');
+            }
         }
     }
 });

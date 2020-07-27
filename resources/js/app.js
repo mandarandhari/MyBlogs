@@ -48,7 +48,7 @@ const routes = [
     { path: '/about', name: 'about', component: require('./components/About.vue').default },
     { path: '/posts', name: 'posts', component: require('./components/Posts.vue').default },
     { path: '/contact', name: 'contact', component: require('./components/Contact.vue').default },
-    { path: '/blog/:blogUrl', name: 'blog', component: require('./components/Post.vue').default },
+    { path: '/post/:blogUrl', name: 'blog', component: require('./components/Post.vue').default },
     { path: '/signup', name: 'signup', component: require('./components/auth/Signup.vue').default },
     { path: '/signin', name: 'signin', component: require('./components/auth/Signin.vue').default },
     { path: '/profile', name: 'profile', component: require('./components/auth/Profile.vue').default },

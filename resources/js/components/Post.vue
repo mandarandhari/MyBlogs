@@ -58,7 +58,6 @@
             getArticle() {
                 axios.get('/api/getArticle/' + this.$route.params.blogUrl)
                 .then((response) => {
-                    console.log(response);
                     if (response.data.success) {
                         this.bgImage = 'http://admin.myblogs.local/storage/articleBanners/' + response.data.article.id + '/' + response.data.article.banner;
                         this.article = response.data.article;
@@ -77,6 +76,40 @@
                 .catch(() => {
 
                 });
+            },
+            getCustomerData() {
+                axios.get('/api/getCustomerData', {
+                    headers: {
+                        'Authorization': 'Bearer ' + this.$store.state.token,
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    }
+                })
+                .then((response) => {
+                    this.$store.commit('updateProfile', response.data);
+                })
+            },
+            checkArticleForPremium() {
+                axios.get('/api/checkArticleForPremium/' + this.$route.params.blogUrl)
+                .then((response) => {
+                    if ( response.data.success ) {
+                        if (response.data.is_premium == 'yes') {
+                            if ( this.$store.state.isLoggedIn && this.$store.state.customer.is_paid == 'no' ) {
+                                localStorage.setItem('articleUrl', this.$route.params.blogUrl);
+                                this.$router.push('/payment');
+                            } else if ( !this.$store.state.isLoggedIn ) {
+                                localStorage.setItem('articleUrl', this.$route.params.blogUrl);
+                                this.$router.push('/signin');
+                            } else {
+                                this.getArticle();
+                            }
+                        } else {
+                            this.getArticle();
+                        }
+                    } else {
+                        this.$router.push('/home');
+                    }
+                });
             }
         },
         mounted() {
@@ -84,7 +117,12 @@
         },
         created() {
             this.$Progress.start();
-            this.getArticle();
+            
+            if (this.$store.state.isLoggedIn) {
+                this.getCustomerData();
+            }
+
+            this.checkArticleForPremium();            
         }
     }
 </script>

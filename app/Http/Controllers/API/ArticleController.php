@@ -47,4 +47,20 @@ class ArticleController extends Controller
             ]);
         }
     }
+
+    public function check_article_for_premium($url)
+    {
+        $article = Article::where('url', '=', $url)->first(['id', 'is_premium']);
+
+        if ( isset( $article->id ) ) {
+            return response()->json([
+                'success' => TRUE,
+                'is_premium' => $article->is_premium
+            ]);
+        } else {
+            return response()->json([
+                'success' => FALSE
+            ]);
+        }        
+    }
 }

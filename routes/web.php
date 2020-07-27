@@ -20,7 +20,7 @@ Route::get('/', function () {
 // Route::get('/home', 'HomeController@index')->name('home');
 
 Route::get('/{url}', 'HomeController@index')->where('{url}', '([A-z0-9\/._+-]+)?');
-Route::get('/blog/{url}', 'HomeController@index')->where('{url}', '([A-z0-9\/._+-]+)?');
+Route::get('/post/{url}', 'HomeController@index')->where('{url}', '([A-z0-9\/._+-]+)?');
 
 // Route::middleware('auth:api')->group(function() {
     // Route::post('/payment/pay', 'PaymentController@pay');

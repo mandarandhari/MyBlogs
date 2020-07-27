@@ -2325,6 +2325,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2351,6 +2356,19 @@ __webpack_require__.r(__webpack_exports__);
       }).then(function (response) {
         _this2.$store.commit('updateProfile', response.data);
       });
+    },
+    checkArticleRedirect: function checkArticleRedirect(url) {
+      if (this.$store.state.isLoggedIn) {
+        if (this.$store.state.customer.is_paid == 'yes') {
+          this.$router.push('/post/' + url);
+        } else {
+          localStorage.setItem('articleUrl', url);
+          this.$router.push('/payment');
+        }
+      } else {
+        localStorage.setItem('articleUrl', url);
+        this.$router.push('/signin');
+      }
     }
   },
   mounted: function mounted() {
@@ -2438,8 +2456,6 @@ __webpack_require__.r(__webpack_exports__);
       var _this = this;
 
       axios.get('/api/getArticle/' + this.$route.params.blogUrl).then(function (response) {
-        console.log(response);
-
         if (response.data.success) {
           _this.bgImage = 'http://admin.myblogs.local/storage/articleBanners/' + response.data.article.id + '/' + response.data.article.banner;
           _this.article = response.data.article;
@@ -2452,6 +2468,44 @@ __webpack_require__.r(__webpack_exports__);
           }, 'slow');
         } else {}
       })["catch"](function () {});
+    },
+    getCustomerData: function getCustomerData() {
+      var _this2 = this;
+
+      axios.get('/api/getCustomerData', {
+        headers: {
+          'Authorization': 'Bearer ' + this.$store.state.token,
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        }
+      }).then(function (response) {
+        _this2.$store.commit('updateProfile', response.data);
+      });
+    },
+    checkArticleForPremium: function checkArticleForPremium() {
+      var _this3 = this;
+
+      axios.get('/api/checkArticleForPremium/' + this.$route.params.blogUrl).then(function (response) {
+        if (response.data.success) {
+          if (response.data.is_premium == 'yes') {
+            if (_this3.$store.state.isLoggedIn && _this3.$store.state.customer.is_paid == 'no') {
+              localStorage.setItem('articleUrl', _this3.$route.params.blogUrl);
+
+              _this3.$router.push('/payment');
+            } else if (!_this3.$store.state.isLoggedIn) {
+              localStorage.setItem('articleUrl', _this3.$route.params.blogUrl);
+
+              _this3.$router.push('/signin');
+            } else {
+              _this3.getArticle();
+            }
+          } else {
+            _this3.getArticle();
+          }
+        } else {
+          _this3.$router.push('/home');
+        }
+      });
     }
   },
   mounted: function mounted() {
@@ -2459,7 +2513,12 @@ __webpack_require__.r(__webpack_exports__);
   },
   created: function created() {
     this.$Progress.start();
-    this.getArticle();
+
+    if (this.$store.state.isLoggedIn) {
+      this.getCustomerData();
+    }
+
+    this.checkArticleForPremium();
   }
 });
 
@@ -2567,10 +2626,12 @@ __webpack_require__.r(__webpack_exports__);
         if (this.$store.state.customer.is_paid == 'yes') {
           this.$router.push('/post/' + url);
         } else {
+          localStorage.setItem('articleUrl', url);
           this.$router.push('/payment');
         }
       } else {
-        this.$router.push('/login');
+        localStorage.setItem('articleUrl', url);
+        this.$router.push('/signin');
       }
     }
   },
@@ -2681,8 +2742,8 @@ __webpack_require__.r(__webpack_exports__);
       payment: function payment(resolve, reject) {
         return new Promise(function (resolve, reject) {
           axios.post('/api/payment/create', {
-            return_url: url + '/home',
-            cancel_url: url + '/payment',
+            return_url: localStorage.getItem('articleUrl') == null ? app_url + '/home' : app_url + '/post/' + localStorage.getItem('articleUrl'),
+            cancel_url: app_url + '/payment',
             amount: 99,
             customer_id: customer_id
           }, {
@@ -2964,7 +3025,7 @@ __webpack_require__.r(__webpack_exports__);
         if (response.data.success) {
           _this.$store.commit('CustomerLoggedIn', response.data);
 
-          _this.$router.push('/home');
+          localStorage.getItem('articleUrl') == null ? _this.$router.push('/home') : _this.$router.push('/post/' + localStorage.getItem('articleUrl'));
         } else {
           _this.error = true;
           _this.errorMsg = response.data.message;
@@ -88640,17 +88701,49 @@ var render = function() {
                 "article",
                 { key: article.id, staticClass: "post-preview" },
                 [
-                  _c("router-link", { attrs: { to: "/blog/" + article.url } }, [
-                    _c("h2", { staticClass: "post-title" }, [
-                      _vm._v(_vm._s(article.title))
-                    ]),
-                    _vm._v(" "),
-                    article.description != null
-                      ? _c("h3", { staticClass: "post-subtitle" }, [
-                          _vm._v(_vm._s(article.description))
-                        ])
-                      : _vm._e()
-                  ]),
+                  article.is_premium == "no"
+                    ? _c(
+                        "router-link",
+                        { attrs: { to: "/post/" + article.url } },
+                        [
+                          _c("h2", { staticClass: "post-title" }, [
+                            _vm._v(_vm._s(article.title))
+                          ]),
+                          _vm._v(" "),
+                          article.description != null
+                            ? _c("h3", { staticClass: "post-subtitle" }, [
+                                _vm._v(_vm._s(article.description))
+                              ])
+                            : _vm._e()
+                        ]
+                      )
+                    : _vm._e(),
+                  _vm._v(" "),
+                  article.is_premium == "yes"
+                    ? _c(
+                        "a",
+                        {
+                          attrs: { href: "/post/" + article.url },
+                          on: {
+                            click: function($event) {
+                              $event.preventDefault()
+                              return _vm.checkArticleRedirect(article.url)
+                            }
+                          }
+                        },
+                        [
+                          _c("h2", { staticClass: "post-title" }, [
+                            _vm._v(_vm._s(article.title))
+                          ]),
+                          _vm._v(" "),
+                          article.description != null
+                            ? _c("h3", { staticClass: "post-subtitle" }, [
+                                _vm._v(_vm._s(article.description))
+                              ])
+                            : _vm._e()
+                        ]
+                      )
+                    : _vm._e(),
                   _vm._v(" "),
                   _c("p", { staticClass: "post-meta" }, [
                     _vm._v(
@@ -88886,10 +88979,10 @@ var render = function() {
                 "article",
                 { key: article.id, staticClass: "post-preview" },
                 [
-                  article.is_premium == "yes"
+                  article.is_premium == "no"
                     ? _c(
                         "router-link",
-                        { attrs: { to: "/blog/" + article.url } },
+                        { attrs: { to: "/post/" + article.url } },
                         [
                           _c("h2", { staticClass: "post-title" }, [
                             _vm._v(_vm._s(article.title))
@@ -88904,11 +88997,11 @@ var render = function() {
                       )
                     : _vm._e(),
                   _vm._v(" "),
-                  article.is_premium == "no"
+                  article.is_premium == "yes"
                     ? _c(
                         "a",
                         {
-                          attrs: { href: "/blog/" + article.url },
+                          attrs: { href: "/post/" + article.url },
                           on: {
                             click: function($event) {
                               $event.preventDefault()
@@ -106566,7 +106659,7 @@ var routes = [{
   name: 'contact',
   component: __webpack_require__(/*! ./components/Contact.vue */ "./resources/js/components/Contact.vue")["default"]
 }, {
-  path: '/blog/:blogUrl',
+  path: '/post/:blogUrl',
   name: 'blog',
   component: __webpack_require__(/*! ./components/Post.vue */ "./resources/js/components/Post.vue")["default"]
 }, {
@@ -107481,6 +107574,10 @@ var Store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
       state.isLoggedIn = false;
       localStorage.removeItem('token');
       localStorage.removeItem('customer');
+
+      if (localStorage.getItem('articleUrl') != null) {
+        localStorage.removeItem('articleUrl');
+      }
     }
   }
 });

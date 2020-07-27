@@ -85,9 +85,9 @@
                 commit: true,
                 payment: function(resolve, reject) {
                     return new Promise((resolve, reject) => {
-                        axios.post('/api/payment/create', {
-                            return_url: url + '/home',
-                            cancel_url: url + '/payment',
+                        axios.post('/api/payment/create', {                            
+                            return_url: localStorage.getItem('articleUrl') == null ? app_url + '/home' : app_url + '/post/' + localStorage.getItem('articleUrl'),
+                            cancel_url: app_url + '/payment',
                             amount: 99,
                             customer_id: customer_id
                         }, {
@@ -115,6 +115,7 @@
                         })
                         .then((response) => {
                             resolve(response);
+
                             actions.redirect();
                         })
                         .catch((errors) => {

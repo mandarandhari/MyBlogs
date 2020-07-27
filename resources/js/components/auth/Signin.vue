@@ -76,7 +76,8 @@
                 .then((response) => {
                     if (response.data.success) {
                         this.$store.commit('CustomerLoggedIn', response.data);
-                        this.$router.push('/home');
+                        
+                        localStorage.getItem('articleUrl') == null ? this.$router.push('/home') : this.$router.push( '/post/' + localStorage.getItem('articleUrl') );
                     } else {
                         this.error = true;
                         this.errorMsg = response.data.message;

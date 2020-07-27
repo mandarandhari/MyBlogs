@@ -24,13 +24,13 @@
                     <!-- Home Post List -->               
 
                     <article class="post-preview" v-for="article in articles" :key="article.id">
-                        <router-link :to="'/blog/' + article.url" v-if="article.is_premium == 'yes'">
+                        <router-link :to="'/post/' + article.url" v-if="article.is_premium == 'no'">
                             <h2 class="post-title">{{ article.title }}</h2>
                             
                             <h3 class="post-subtitle" v-if="article.description != null">{{ article.description }}</h3>
                             
                         </router-link>
-                        <a :href="'/blog/' + article.url" v-if="article.is_premium == 'no'" @click.prevent="checkArticleRedirect(article.url)">
+                        <a :href="'/post/' + article.url" v-if="article.is_premium == 'yes'" @click.prevent="checkArticleRedirect(article.url)">
                             <h2 class="post-title">{{ article.title }}</h2>
                             
                             <h3 class="post-subtitle" v-if="article.description != null">{{ article.description }}</h3>
@@ -95,10 +95,12 @@
                     if (this.$store.state.customer.is_paid == 'yes') {
                         this.$router.push('/post/' + url);
                     } else {
+                        localStorage.setItem('articleUrl', url);
                         this.$router.push('/payment');
                     }
                 } else {
-                    this.$router.push('/login');
+                    localStorage.setItem('articleUrl', url);
+                    this.$router.push('/signin');
                 }
             }
         },

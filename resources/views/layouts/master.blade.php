@@ -21,7 +21,7 @@
 
     <link rel="stylesheet" href="/css/main.css">
     <script>
-        var url = "{{ env('APP_URL') }}";
+        var app_url = "{{ env('APP_URL') }}";
     </script>
     <!-- <link rel="canonical" href="https://startbootstrap.github.io/startbootstrap-clean-blog-jekyll/"> -->
     <!-- <link rel="alternate" type="application/rss+xml" title="Clean Blog" href="/startbootstrap-clean-blog-jekyll/feed.xml"> -->
