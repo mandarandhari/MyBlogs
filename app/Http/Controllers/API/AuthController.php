@@ -123,4 +123,30 @@ class AuthController extends Controller
             ]);
         }
     }
+
+    public function get_customer_data()
+    {
+        if ( isset(Auth::guard('api')->user()->id) ) {
+            $userData = [
+                'id' => Auth::guard('api')->user()->id,
+                'name' => Auth::guard('api')->user()->name,
+                'phone' => Auth::guard('api')->user()->phone,
+                'email' => Auth::guard('api')->user()->email,
+                'is_paid' => Auth::guard('api')->user()->is_paid,
+                'subscription_started_on' => Auth::guard('api')->user()->subscription_started_on,
+                'subscription_end_on' => Auth::guard('api')->user()->subscription_end_on,
+                'created_at' => Auth::guard('api')->user()->subscription_end_on,
+            ];
+
+            return response()->json([
+                'success' => TRUE,
+                'customer' => $userData
+            ]);
+        } else {
+            return response()->json([
+                'success' => FALSE,
+                'message' => 'You are not authorized'
+            ]);
+        }        
+    }
 }

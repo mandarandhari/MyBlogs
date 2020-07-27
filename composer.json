@@ -12,7 +12,9 @@
         "fideloper/proxy": "^4.0",
         "laravel/framework": "^6.2",
         "laravel/passport": "^9.3",
-        "laravel/tinker": "^2.0"
+        "laravel/tinker": "^2.0",
+        "monolog/monolog": "1.24",
+        "paypal/rest-api-sdk-php": "*"
     },
     "require-dev": {
         "facade/ignition": "^1.4",

@@ -27,4 +27,8 @@ Route::post('/signin', 'API\AuthController@signin');
 Route::middleware('auth:api')->group(function() {
     Route::post('/updateProfile', 'API\AuthController@update_profile');
     Route::post('/logout', 'API\AuthController@logout');
+    Route::get('/getCustomerDataEnc', 'API\AuthController@get_customer_data_enc');
+    Route::post('/payment/create', 'API\PaymentController@create_payment');
+    Route::post('/payment/execute', 'API\PaymentController@execute_payment');
+    Route::get('/getCustomerData', 'API\AuthController@get_customer_data');
 });

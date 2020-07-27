@@ -63,10 +63,27 @@
                 .catch(() => {
 
                 });
+            },
+            getCustomerData() {
+                axios.get('/api/getCustomerData', {
+                    headers: {
+                        'Authorization': 'Bearer ' + this.$store.state.token,
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    }
+                })
+                .then((response) => {
+                    this.$store.commit('updateProfile', response.data);
+                })
             }
         },
         mounted() {
             this.getLatestArticles();
+
+            if (this.$store.state.isLoggedIn) {
+                this.getCustomerData();
+            }
+            
             this.$Progress.finish();
         },
         created() {

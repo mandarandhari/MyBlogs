@@ -9,7 +9,6 @@ require('./bootstrap');
 window.Vue = require('vue');
 
 import VueRouter from 'vue-router';
-import Vuex from 'vuex';
 import App from './components/App.vue';
 import moment from 'moment';
 import VueProgressBar from 'vue-progressbar';
@@ -45,14 +44,15 @@ Vue.use(VueProgressBar, options);
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
 const routes = [
-    { path: '/home', component: require('./components/Home.vue').default },
-    { path: '/about', component: require('./components/About.vue').default },
-    { path: '/posts', component: require('./components/Posts.vue').default },
-    { path: '/contact', component: require('./components/Contact.vue').default },
-    { path: '/blog/:blogUrl', component: require('./components/Post.vue').default },
-    { path: '/signup', component: require('./components/auth/Signup.vue').default },
-    { path: '/signin', component: require('./components/auth/Signin.vue').default },
-    { path: '/profile', component: require('./components/auth/Profile.vue').default }
+    { path: '/home', name: 'home', component: require('./components/Home.vue').default },
+    { path: '/about', name: 'about', component: require('./components/About.vue').default },
+    { path: '/posts', name: 'posts', component: require('./components/Posts.vue').default },
+    { path: '/contact', name: 'contact', component: require('./components/Contact.vue').default },
+    { path: '/blog/:blogUrl', name: 'blog', component: require('./components/Post.vue').default },
+    { path: '/signup', name: 'signup', component: require('./components/auth/Signup.vue').default },
+    { path: '/signin', name: 'signin', component: require('./components/auth/Signin.vue').default },
+    { path: '/profile', name: 'profile', component: require('./components/auth/Profile.vue').default },
+    { path: '/payment', name: 'payment', component: require('./components/auth/Payment.vue').default }
 ];
 
 const router = new VueRouter({
@@ -66,6 +66,10 @@ router.beforeEach((to, from, next) => {
     }
 
     if ( to.path == '/profile' && !store.state.isLoggedIn ) {
+        next('/home');
+    }
+
+    if ( to.path == '/payment' && (!store.state.isLoggedIn || store.state.customer.is_paid == 'yes')) {
         next('/home');
     }
 
