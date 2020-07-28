@@ -4,7 +4,9 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\Article;
+use App\Comment;
 
 class ArticleController extends Controller
 {
@@ -28,18 +30,27 @@ class ArticleController extends Controller
 
     public function get_article_by_url($url)
     {
-        $article = Article::where('url', '=', $url)->first(['id', 'title', 'url', 'description', 'content', 'meta_title', 'meta_description', 'banner', 'created_at']);
+        $article = Article::where('url', '=', $url)
+                    ->first(['id', 'title', 'url', 'description', 'content', 'meta_title', 'meta_description', 'banner', 'created_at']);
         
-        $prev_article = Article::where('id', '>', $article->id)->first(['id', 'title', 'url']);
+        $prev_article = Article::where('id', '>', $article->id)
+                        ->first(['id', 'title', 'url']);
 
-        $next_article = Article::where('id', '<', $article->id)->first(['id', 'title', 'url']);
+        $next_article = Article::where('id', '<', $article->id)
+                        ->first(['id', 'title', 'url']);
+
+        $comments = Comment::leftJoin('customers', 'articles_has_comments.customer_id', '=', 'customers.id')
+                    ->where('articles_has_comments.article_id', '=', $article->id)
+                    ->orderBy('articles_has_comments.id', 'desc')
+                    ->get(['articles_has_comments.id', 'articles_has_comments.article_id', 'articles_has_comments.customer_id', 'articles_has_comments.comment', 'articles_has_comments.created_at', 'customers.name']);
 
         if (isset($article->id)) {
             return response()->json([
                 'success' => TRUE,
                 'article' => $article,
                 'prevArticle' => $prev_article,
-                'nextArticle' => $next_article
+                'nextArticle' => $next_article,
+                'comments' => $comments
             ]);
         } else {
             return response()->json([
@@ -60,6 +71,38 @@ class ArticleController extends Controller
         } else {
             return response()->json([
                 'success' => FALSE
+            ]);
+        }        
+    }
+
+    public function add_comment(Request $request)
+    {
+        if (Auth::guard('api')->user()->id) {
+            $request->validate([
+                'comment' => ['required', 'string', 'max:1000']
+            ]);
+
+            $comment = new Comment;
+
+            $comment->article_id = $request->article_id;
+            $comment->customer_id = Auth::guard('api')->user()->id;
+            $comment->comment = $request->comment;
+
+            if ($comment->save()) {
+                return response()->json([
+                    'success' => TRUE,
+                    'comment' => $comment
+                ]);
+            } else {
+                return response()->json([
+                    'success' => FALSE,
+                    'message' => 'An unexpected error occured'
+                ]);
+            }            
+        } else {
+            return response()->json([
+                'success' => FALSE,
+                'message' => 'You are not logged in'
             ]);
         }        
     }
