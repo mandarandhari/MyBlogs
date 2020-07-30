@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div id="main-div">
         <!-- Page Header -->
 
         <header class="masthead" style="background-image: url('/img/bg-index.jpg')">
@@ -69,7 +69,7 @@
 
                 });
             },
-            getCustomerData() {
+            async getCustomerData() {
                 axios.get('/api/getCustomerData', {
                     headers: {
                         'Authorization': 'Bearer ' + this.$store.state.token,
@@ -103,6 +103,10 @@
             }
             
             this.$Progress.finish();
+
+            $('html, body').animate({
+                scrollTop: $('#main-div').offset().top - 100
+            }, 1000);
         },
         created() {
             this.$Progress.start();

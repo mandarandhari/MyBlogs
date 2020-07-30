@@ -13,8 +13,6 @@ use PayPal\Api\RedirectUrls;
 use PayPal\Api\Payment;
 use PayPal\Api\PaymentExecution;
 use App\Customer;
-use Session;
-use URL;
 
 class PaymentController extends Controller
 {

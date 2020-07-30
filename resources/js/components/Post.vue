@@ -54,8 +54,8 @@
                                     <span class="text-danger" style="font-size: 15px;" v-if="commentError != ''">{{ commentError }}</span>
                                 </div>
                                 <div class="form-group clearfix">
-                                    <button type="submit" class="btn btn-primary float-right" v-if="!editMode">Add</button>
-                                    <button type="submit" class="btn btn-primary float-right" v-if="editMode">Update</button>
+                                    <button type="submit" class="btn btn-primary float-right add-comment-btn" v-if="!editMode">{{ addBtnText }}</button>
+                                    <button type="submit" class="btn btn-primary float-right update-comment-btn" v-if="editMode">{{ updateBtnText }}</button>
                                     <button type="button" class="btn btn-danger float-right mr-3" v-if="editMode" @click="cancelCommentEdit">Cancel</button>
                                 </div>
                             </form>
@@ -97,7 +97,7 @@
                         Do you want to delete this comment?
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-danger" @click="deleteComment">Yes</button>
+                        <button type="button" class="btn btn-danger delete-comment-btn" @click="deleteComment">{{ deleteBtnText }}</button>
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
                     </div>
                 </div>
@@ -129,7 +129,10 @@
                 commentSuccessMsg: '',
                 commentFailure: false,
                 commentFailureMsg: '',
-                editMode: false
+                editMode: false,
+                addBtnText: 'Add',
+                updateBtnText: 'Update',
+                deleteBtnText: 'Yes'
             }
         },
         methods: {
@@ -156,7 +159,7 @@
 
                 });
             },
-            getCustomerData() {
+            async getCustomerData() {
                 axios.get('/api/getCustomerData', {
                     headers: {
                         'Authorization': 'Bearer ' + this.$store.state.token,
@@ -190,8 +193,60 @@
                     }
                 });
             },
+            createSpinner(method) {
+                var spinner = document.createElement('i');
+                spinner.className = 'fa fa-spinner fa-spin spinner';
+
+                switch (method) {
+                    case 'add':
+                        this.addBtnText = ' Adding';
+                        $('.add-comment-btn').prepend(spinner);
+                        $('.add-comment-btn').attr('disabled', 'disabled');
+                        break;
+                    
+                    case 'update':
+                        this.updateBtnText = '  Updating';
+                        $('.update-comment-btn').prepend(spinner);
+                        $('.update-comment-btn').attr('disabled', 'disabled');
+                        break;
+                    
+                    case 'delete':
+                        this.deleteBtnText = '  Loading';
+                        $('.delete-comment-btn').prepend(spinner);
+                        $('.delete-comment-btn').attr('disabled', 'disabled');
+                        break;
+                
+                    default:
+                        break;
+                }
+            },
+            destroySpinner(method) {
+                $('.spinner').remove();
+
+                switch (method) {
+                    case 'add':
+                        $('.add-comment-btn').attr('disabled', false);
+                        this.addBtnText = "Add";
+                        break;
+
+                    case 'update':
+                        $('.update-comment-btn').attr('disabled', false);
+                        this.updateBtnText = "Update";
+                        break;
+
+                    case 'delete':
+                        $('.delete-comment-btn').attr('disabled', false);
+                        this.deleteBtnText = "Yes";
+                        break;
+                    
+                    default:
+                        break;
+                }
+            },
             addComment() {
                 this.commentError = '';
+
+                this.createSpinner('add');
 
                 axios.post('/api/addComment', {
                     comment: this.comment,
@@ -204,6 +259,8 @@
                     }
                 })
                 .then((response) => {
+                    this.destroySpinner('add');
+
                     this.comment = '';
                     if (response.data.success) {
                         this.commentSuccess = true;
@@ -229,6 +286,8 @@
                     }, 3000);
                 })
                 .catch((errors) => {
+                    this.destroySpinner('add');
+
                     this.commentError = errors.response.data.errors.comment[0];
                 });
             },
@@ -250,6 +309,8 @@
                 });
             },
             updateComment() {
+                this.createSpinner('update');
+
                 axios.post('/api/updateComment', {
                     comment_id: this.commentId,
                     comment: this.comment
@@ -261,6 +322,8 @@
                     }
                 })
                 .then((response) => {
+                    this.destroySpinner('update');
+
                     if (response.data.success) {
                         this.commentSuccess = true;
                         this.commentSuccessMsg = response.data.message;
@@ -287,6 +350,8 @@
                     }
                 })
                 .catch((errors) => {
+                    this.destroySpinner('update');
+
                     this.commentError = errors.response.data.errors.comment[0];
                 });
             },
@@ -304,6 +369,8 @@
                 $('#deleteCommentModal').modal('show');
             },
             deleteComment() {
+                this.createSpinner('delete');
+
                 axios.post('/api/deleteComment', {
                     'comment_id': this.commentId
                 }, {
@@ -314,6 +381,8 @@
                     }
                 })
                 .then((response) => {
+                    this.destroySpinner('delete');
+
                     if (response.data.success) {
                         $.each(this.comments, (i, v) => {
                             if (v.id == this.commentId) {
@@ -325,6 +394,7 @@
                     }
                 })
                 .catch((errors) => {
+                    this.destroySpinner('delete');
                     console.log(errors.response.data);
                 });
             }

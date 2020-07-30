@@ -19,14 +19,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 col-md-10 mx-auto">
-                    <!-- <form name="payment" id="paymentForm" novalidate action="/payment/pay" method="post"> -->
-                        <!-- <input type="hidden" name="_token" v-model="token"> -->
-                        <!-- <input type="hidden" name="_data" v-model="this.data"> -->
-                        <p class="text-center">To access premium article, use have to subscribe to our services by making payment of Rs.99/year.</p>
-                        <!-- <div class="form-group text-center"> -->
-                            <!-- <button type="submit" class="btn btn-primary" id="signinButton">Proceed</button> -->
-                        <!-- </div> -->
-                    <!-- </form> -->
+                    <p class="text-center">To access premium article, use have to subscribe to our services by making payment of Rs.99/year.</p>
                     <div id="payment-button" class="text-center"></div>
                 </div>
             </div>

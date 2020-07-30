@@ -70,7 +70,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <button type="submit" class="btn btn-primary" id="profileButton">Update</button>
+                            <button type="submit" class="btn btn-primary profile-update-btn" id="profileButton">{{ updateBtnText }}</button>
                         </div>
                     </form>
                 </div>
@@ -92,11 +92,21 @@
                 error: false,
                 success: false,
                 errorMsg: '',
-                successMsg: ''
+                successMsg: '',
+                updateBtnText: "Update"
             }
         },
         methods: {
             updateProfile() {
+                this.success = false;
+                this.error = false;
+
+                var spinner = document.createElement('i');
+                spinner.className = 'fa fa-spinner fa-spin spinner';
+                this.updateBtnText = ' Updating';
+                $('.profile-update-btn').prepend(spinner);
+                $('.profile-update-btn').attr('disabled', 'disabled');
+
                 axios.post('/api/updateProfile', {
                     name: this.name,
                     email: this.email,
@@ -111,8 +121,9 @@
                     }
                 })
                 .then((response) => {
-                    this.success = false;
-                    this.error = false;
+                    $('.spinner').remove();
+                    $('.profile-update-btn').attr('disabled', false);
+                    this.updateBtnText = "Update";
 
                     if (response.data.success) {
                         this.success = true;
@@ -125,6 +136,10 @@
                     }
                 })
                 .catch((errors) => {
+                    $('.spinner').remove();
+                    $('.profile-update-btn').attr('disabled', false);
+                    this.updateBtnText = "Update";
+
                     if (errors.response.status == 422) {
                         this.errors = errors.response.data.errors;
                     }

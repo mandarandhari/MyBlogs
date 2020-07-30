@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div id="main-div">
         <!-- Page Header -->
 
         <header class="masthead" style="background-image: url('/img/bg-register.jpg')">
@@ -63,7 +63,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <button type="submit" class="btn btn-primary" id="signupButton">Sign up</button>
+                            <button type="submit" class="btn btn-primary" id="signupButton">{{ signUpBtnText }}</button>
                         </div>
                     </form>
                 </div>
@@ -88,11 +88,18 @@
                 confirmPassword: '',
                 errors: {},
                 error: false,
-                errorsMsg: ''
+                errorsMsg: '',
+                signUpBtnText: 'Sign up'
             }
         },
         methods: {
             signup() {
+                var spinner = document.createElement('i');
+                spinner.className = 'fa fa-spinner fa-spin spinner';
+                this.signUpBtnText = ' Please Wait';
+                $('#signupButton').prepend(spinner);
+                $('#signupButton').attr('disabled', 'disabled');
+
                 axios.post('/api/signup', {
                     name: this.name,
                     email: this.email,
@@ -101,12 +108,20 @@
                     confirmPassword: this.confirmPassword
                 })
                 .then((response) => {
+                    $('.spinner').remove();
+                    $('#signupButton').attr('disabled', false);
+                    this.signUpBtnText = "Sign up";
+
                     if (response.data.success) {
                         this.$store.commit('CustomerLoggedIn', response.data);
                         this.$router.push('/home');
                     }
                 })
                 .catch((errors) => {
+                    $('.spinner').remove();
+                    $('#signupButton').attr('disabled', false);
+                    this.signUpBtnText = "Sign up";
+
                     if (errors && errors.response.status == 422) {
                         this.errors = errors.response.data.errors;
                     }
@@ -115,6 +130,10 @@
         },
         mounted() {
             this.$Progress.finish();
+
+            $('html, body').animate({
+                scrollTop: $('#main-div').offset().top - 100
+            }, 1000);
         },
         created() {
             this.$Progress.start();

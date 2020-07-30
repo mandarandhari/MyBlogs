@@ -67,7 +67,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <button type="submit" class="btn btn-primary" id="sendMessageButton">Send</button>
+                            <button type="submit" class="btn btn-primary send-message" id="sendMessageButton">{{ contactBtnText }}</button>
                         </div>
                     </form>
                 </div>
@@ -88,11 +88,18 @@
                 error: false,
                 successMsg: '',
                 errorMsg: '',
-                errors: {}
+                errors: {},
+                contactBtnText: "Send"
             }
         },
         methods: {
             addContact() {
+                var spinner = document.createElement('i');
+                spinner.className = 'fa fa-spinner fa-spin spinner';
+                this.contactBtnText = ' Loading';
+                $('.send-message').prepend(spinner);
+                $('.send-message').attr('disabled', 'disabled');
+
                 axios.post('/api/addContact', {
                     name: this.name,
                     email: this.email,
@@ -102,6 +109,10 @@
                 .then((response) => {
                     this.success = false;
                     this.error = false;
+
+                    $('.spinner').remove();
+                    $('.send-message').attr('disabled', false);
+                    this.contactBtnText = "Send";
 
                     if (response.data.success) {
                         this.success = true;
@@ -116,6 +127,10 @@
                     }
                 })
                 .catch((errors) => {
+                    $('.spinner').remove();
+                    $('.send-message').attr('disabled', false);
+                    this.contactBtnText = "Send";
+                    
                     this.errors = errors.response.data.errors;
                 });
             }

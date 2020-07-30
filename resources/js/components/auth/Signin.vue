@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div id="main-div">
         <!-- Page Header -->
 
         <header class="masthead" style="background-image: url('/img/bg-login.jpg')">
@@ -42,7 +42,7 @@
                         </div>
                         <br>
                         <div class="form-group">
-                            <button type="submit" class="btn btn-primary" id="signinButton">Sign in</button>
+                            <button type="submit" class="btn btn-primary" id="signinButton">{{ signInBtnText }}</button>
                         </div>
                     </form>
                 </div>
@@ -64,16 +64,27 @@
                 password: '',
                 errors: {},
                 error: false,
-                errorMsg: ''
+                errorMsg: '',
+                signInBtnText: 'Sign in'
             }
         },
         methods: {
             signin() {
+                var spinner = document.createElement('i');
+                spinner.className = 'fa fa-spinner fa-spin spinner';
+                this.signInBtnText = ' Please Wait';
+                $('#signinButton').prepend(spinner);
+                $('#signinButton').attr('disabled', 'disabled');
+
                 axios.post('/api/signin', {
                     email: this.email,
                     password: this.password
                 })
                 .then((response) => {
+                    $('.spinner').remove();
+                    $('#signinButton').attr('disabled', false);
+                    this.signInBtnText = "Sign in";
+
                     if (response.data.success) {
                         this.$store.commit('CustomerLoggedIn', response.data);
                         
@@ -84,6 +95,10 @@
                     }
                 })
                 .catch((errors) => {
+                    $('.spinner').remove();
+                    $('#signinButton').attr('disabled', false);
+                    this.signInBtnText = "Sign in";
+
                     if (errors.response.status == 422) {
                         this.errors = errors.response.data.errors;
                     }
@@ -92,6 +107,10 @@
         },
         mounted() {
             this.$Progress.finish();
+
+            $('html, body').animate({
+                scrollTop: $('#main-div').offset().top - 100
+            }, 1000);
         },
         created() {
             this.$Progress.start();

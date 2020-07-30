@@ -26,9 +26,10 @@
                         </li>
                         <li class="nav-item dropdown" v-if="$store.state.isLoggedIn">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ $store.state.customer.name }}</a>
-                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <router-link to="/profile" class="dropdown-item">Profile</router-link>
-                                <a href="#" class="dropdown-item" @click.prevent="logout">Logout</a>
+                            <div class="dropdown-menu pt-0 pb-0" aria-labelledby="navbarDropdown">
+                                <router-link to="/payment" class="dropdown-item text-decoration-none" v-if="$store.state.customer.is_paid == 'no'">Payment</router-link>
+                                <router-link to="/profile" class="dropdown-item text-decoration-none">Profile</router-link>
+                                <a href="#" class="dropdown-item text-decoration-none" @click.prevent="logout">Logout</a>
                             </div>
                         </li>
                     </ul>
