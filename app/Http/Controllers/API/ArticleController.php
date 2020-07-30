@@ -91,7 +91,8 @@ class ArticleController extends Controller
             if ($comment->save()) {
                 return response()->json([
                     'success' => TRUE,
-                    'comment' => $comment
+                    'comment' => $comment,
+                    'message' => 'Comment added'
                 ]);
             } else {
                 return response()->json([
@@ -105,5 +106,66 @@ class ArticleController extends Controller
                 'message' => 'You are not logged in'
             ]);
         }        
+    }
+
+    public function update_comment(Request $request)
+    {
+        if (Auth::guard('api')->user()->id) {
+            $request->validate([
+                'comment' => ['required', 'string', 'max:1000']
+            ]);
+
+            $comment = Comment::find($request->comment_id);
+
+            if ( isset($comment->id) ) {
+                $comment->comment = $request->comment;
+
+                if ( $comment->update() ) {
+                    return response()->json([
+                        'success' => TRUE,
+                        'comment' => $comment,
+                        'message' => 'Comment updated'
+                    ]);
+                } else {
+                    return response()->json([
+                        'success' => FALSE,
+                        'message' => "Something went wrong"
+                    ]);
+                }
+            } else {
+                return response()->json([
+                    'success' => FALSE,
+                    'message' => "Comment does not exists"
+                ]);
+            }
+        } else {
+            return response()->json([
+                'success' => FALSE,
+                'message' => "You are not authorized"
+            ]);
+        }
+    }
+
+    public function delete_comment(Request $request)
+    {
+        if (Auth::guard('api')->user()->id) {
+            $comment = Comment::find($request->comment_id);
+
+            if ($comment->delete()) {
+                return response()->json([
+                    'success' => TRUE
+                ]);
+            } else {
+                return response()->json([
+                    'success' => FALSE
+                ]);
+            }            
+        } else {
+            return response()->json([
+                'success' => FALSE,
+                'message' => 'You are not authorized'
+            ]);
+        }
+        
     }
 }
