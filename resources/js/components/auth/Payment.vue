@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div id="main-div">
         <!-- Page Header -->
 
         <header class="masthead" style="background-image: url('/img/bg-payment.jpg')">
@@ -68,7 +68,7 @@
             paypal.Button.render({
                 env: 'sandbox',
                 client: {
-                    sandbox: "ATbkphAHkKSQTLaIFzsbqBeVDmdXH5tmtqwOzrz4txqhCJ9cuI2zZvuAOkbJEuwqXzbT5kBmxxi_oJaI"
+                    sandbox: process.env.MIX_PAYPAL_CLIENT_ID
                 },
                 locale: 'en_US',
                 style: {
@@ -79,8 +79,8 @@
                 payment: function(resolve, reject) {
                     return new Promise((resolve, reject) => {
                         axios.post('/api/payment/create', {                            
-                            return_url: localStorage.getItem('articleUrl') == null ? app_url + '/home' : app_url + '/post/' + localStorage.getItem('articleUrl'),
-                            cancel_url: app_url + '/payment',
+                            return_url: localStorage.getItem('articleUrl') == null ? process.env.MIX_APP_URL + '/home' : process.env.MIX_APP_URL + '/post/' + localStorage.getItem('articleUrl'),
+                            cancel_url: process.env.MIX_APP_URL + '/payment',
                             amount: 99,
                             customer_id: customer_id
                         }, {
@@ -119,10 +119,16 @@
                 onCancel: function(data, actions) {
                     actions.redirect();
                 }
-            }, '#payment-button')
+            }, '#payment-button');
+
+            $('html, body').animate({
+                scrollTop: $('#main-div').offset().top - 100
+            }, 1000);
         },
         created() {
             this.$Progress.start();
+
+            document.title = 'MyBlogs | Payment';
         }
     }
 </script>

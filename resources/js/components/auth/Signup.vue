@@ -114,7 +114,12 @@
 
                     if (response.data.success) {
                         this.$store.commit('CustomerLoggedIn', response.data);
-                        this.$router.push('/home');
+
+                        if (this.$store.state.customer.is_paid == 'yes') {
+                            localStorage.getItem('articleUrl') == null ? this.$router.push('/home') : this.$router.push( '/post/' + localStorage.getItem('articleUrl') );
+                        } else {
+                            localStorage.getItem('articleUrl') == null ? this.$router.push('/home') : this.$router.push('/payment');
+                        }
                     }
                 })
                 .catch((errors) => {
@@ -137,6 +142,8 @@
         },
         created() {
             this.$Progress.start();
+
+            document.title = 'MyBlogs | Signup';
         }
     }
 </script>

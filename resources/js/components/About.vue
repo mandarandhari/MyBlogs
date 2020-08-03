@@ -44,6 +44,10 @@
         },
         created() {
             this.$Progress.start();
+
+            document.title = 'MyBlogs | About';
+
+            localStorage.removeItem('articleUrl');
         }
     }
 </script>

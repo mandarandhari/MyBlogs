@@ -110,6 +110,10 @@
         },
         created() {
             this.$Progress.start();
+
+            document.title = 'MyBlogs | Posts';
+
+            localStorage.removeItem('articleUrl');
         }
     }
 </script>

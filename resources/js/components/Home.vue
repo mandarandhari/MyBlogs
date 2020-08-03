@@ -10,9 +10,6 @@
                     <div class="col-lg-8 col-md-10 mx-auto">
                         <div class="page-heading">
                             <h1>MyBlogs</h1>
-                            
-                            <span class="subheading">A Blog Theme by Start Bootstrap</span>
-                            
                         </div>
                     </div>
                 </div>
@@ -110,6 +107,10 @@
         },
         created() {
             this.$Progress.start();
+
+            document.title = 'MyBlogs | Home';
+
+            localStorage.removeItem('articleUrl');
         }
     }
 </script>

@@ -140,7 +140,7 @@
                 axios.get('/api/getArticle/' + this.$route.params.blogUrl)
                 .then((response) => {
                     if (response.data.success) {
-                        this.bgImage = app_admin_url + '/storage/articleBanners/' + response.data.article.id + '/' + response.data.article.banner;
+                        this.bgImage = process.env.MIX_APP_ADMIN_URL + '/storage/articleBanners/' + response.data.article.id + '/' + response.data.article.banner;
                         this.article = response.data.article;
                         this.prevArticleExists = response.data.prevArticle != null ? true : false;
                         this.nextArticleExists = response.data.nextArticle != null ? true : false;
@@ -151,12 +151,10 @@
                         $('html, body').animate({
                             scrollTop: $('#main-div').offset().top - 50
                         }, 'slow');
-                    } else {
-                        
                     }
                 })
-                .catch(() => {
-
+                .catch((errors) => {
+                    console.log(errors.response);
                 });
             },
             async getCustomerData() {
@@ -171,7 +169,7 @@
                     this.$store.commit('updateProfile', response.data);
                 })
             },
-            checkArticleForPremium() {
+            async checkArticleForPremium() {
                 axios.get('/api/checkArticleForPremium/' + this.$route.params.blogUrl)
                 .then((response) => {
                     if ( response.data.success ) {
@@ -414,6 +412,10 @@
             }
 
             this.checkArticleForPremium();
+
+            document.title = 'MyBlogs | ' + this.article.title;
+
+            localStorage.removeItem('articleUrl');
         }
     }
 </script>

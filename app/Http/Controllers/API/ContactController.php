@@ -4,7 +4,10 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use App\Contact;
+use App\Mail\ContactUs;
+use App\Mail\ContactUsAdmin;
 
 class ContactController extends Controller
 {
@@ -25,6 +28,12 @@ class ContactController extends Controller
         $contact->message = $request->message;
 
         if ($contact->save()) {
+            Mail::to($request->email)
+                ->queue(new ContactUs($contact));
+                
+            Mail::to('admin@myblogs.com')
+                ->queue(new ContactUsAdmin($contact));
+
             return response()->json([
                 'success' => TRUE,
                 'message' => 'Your message has been sent.'

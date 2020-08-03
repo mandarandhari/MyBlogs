@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use PayPal\Rest\ApiContext;
 use PayPal\Auth\OAuthTokenCredential;
 use PayPal\Api\Payer;
@@ -13,6 +14,7 @@ use PayPal\Api\RedirectUrls;
 use PayPal\Api\Payment;
 use PayPal\Api\PaymentExecution;
 use App\Customer;
+use App\Mail\PaymentMail;
 
 class PaymentController extends Controller
 {
@@ -85,6 +87,9 @@ class PaymentController extends Controller
                     $customer->subscription_end_on = strtotime('+1 year');
 
                     $customer->update();
+
+                    Mail::to($customer->email)
+                        ->queue(new PaymentMail($customer));
 
                     return response()->json([
                         'status' => 'success'

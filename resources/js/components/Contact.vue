@@ -140,6 +140,10 @@
         },
         created() {
             this.$Progress.start();
+
+            document.title = 'MyBlogs | Contact us';
+
+            localStorage.removeItem('articleUrl');
         }
     }
 </script>

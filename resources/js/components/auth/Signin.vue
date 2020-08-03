@@ -49,6 +49,7 @@
             </div>
             <div class="row">
                 <div class="col-lg-8 col-md-10 mx-auto text-center">
+                    <p>Forgot password? <router-link to="/forgot-password" style="color: #3490dc !important;">Click here</router-link></p>
                     <p>Don't have account? <router-link to="/signup" style="color: #3490dc !important;">Sign up</router-link></p>
                 </div>
             </div>
@@ -88,7 +89,11 @@
                     if (response.data.success) {
                         this.$store.commit('CustomerLoggedIn', response.data);
                         
-                        localStorage.getItem('articleUrl') == null ? this.$router.push('/home') : this.$router.push( '/post/' + localStorage.getItem('articleUrl') );
+                        if (this.$store.state.customer.is_paid == 'yes') {
+                            localStorage.getItem('articleUrl') == null ? this.$router.push('/home') : this.$router.push( '/post/' + localStorage.getItem('articleUrl') );
+                        } else {
+                            localStorage.getItem('articleUrl') == null ? this.$router.push('/home') : this.$router.push('/payment');
+                        }
                     } else {
                         this.error = true;
                         this.errorMsg = response.data.message;
@@ -114,6 +119,8 @@
         },
         created() {
             this.$Progress.start();
+
+            document.title = 'MyBlogs | Signin';
         }
     }
 </script>

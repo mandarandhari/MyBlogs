@@ -52,7 +52,9 @@ const routes = [
     { path: '/signup', name: 'signup', component: require('./components/auth/Signup.vue').default },
     { path: '/signin', name: 'signin', component: require('./components/auth/Signin.vue').default },
     { path: '/profile', name: 'profile', component: require('./components/auth/Profile.vue').default },
-    { path: '/payment', name: 'payment', component: require('./components/auth/Payment.vue').default }
+    { path: '/payment', name: 'payment', component: require('./components/auth/Payment.vue').default },
+    { path: '/forgot-password', name: 'forgot-password', component: require('./components/auth/ForgotPassword.vue').default },
+    { path: '/reset-password', name: 'reset-password', component: require('./components/auth/ResetPassword.vue').default }
 ];
 
 const router = new VueRouter({
@@ -61,15 +63,12 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to, from, next) => {
-    if ( ( to.path == '/signin' || to.path == '/signup' ) && store.state.isLoggedIn ) {
-        next('/home');
-    }
-
-    if ( to.path == '/profile' && !store.state.isLoggedIn ) {
-        next('/home');
-    }
-
-    if ( to.path == '/payment' && (!store.state.isLoggedIn || store.state.customer.is_paid == 'yes')) {
+    if ( 
+        ( ( to.path == '/signin' || to.path == '/signup' ) && store.state.isLoggedIn ) ||
+        ( to.path == '/profile' && !store.state.isLoggedIn ) ||
+        ( to.path == '/payment' && (!store.state.isLoggedIn || store.state.customer.is_paid == 'yes') ) ||
+        ( ( to.path == '/forgot-password' || to.path == '/reset-password' ) && store.state.isLoggedIn )
+    ) {
         next('/home');
     }
 

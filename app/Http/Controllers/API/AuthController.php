@@ -6,7 +6,14 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 use App\Customer;
+use App\ForgotPassword;
+use App\Mail\Registration;
+use App\Mail\RegistrationAdmin;
+use App\Mail\ForgotPasswordMail;
+use Illuminate\Support\Facades\Mail;
+use App\Rules\checkCustomerEmail;
 
 class AuthController extends Controller
 {
@@ -29,6 +36,12 @@ class AuthController extends Controller
 
         if ( $customer->save() ) {
             if ( Auth::attempt( [ 'email' => $request->email, 'password' => $request->password ] ) ) {
+                Mail::to($customer->email)
+                    ->queue(new Registration($customer));
+
+                Mail::to('admin@myblogs.com')
+                    ->queue(new RegistrationAdmin($customer));
+
                 return response()->json([
                     'success' => TRUE,
                     'token' => Auth::user()->createToken('MyBlogsToken')->accessToken,
@@ -147,6 +160,88 @@ class AuthController extends Controller
                 'success' => FALSE,
                 'message' => 'You are not authorized'
             ]);
-        }        
+        }
+    }
+
+    public function forgot_password(Request $request)
+    {
+        $request->validate([
+            'email' => ['required', 'string', 'email', 'max:255', new checkCustomerEmail]
+        ]);
+
+        $forgot_password = new ForgotPassword;
+
+        $forgot_password->email = $request->email;
+        $forgot_password->token = Str::random(60);
+
+        if ($forgot_password->save()) {
+            Mail::to($forgot_password->email)
+                ->queue(new ForgotPasswordMail($forgot_password));
+
+            return response()->json([
+                'success' => TRUE,
+                'message' => 'Password reset link has been sent to your email address'
+            ]);
+        } else {
+            return response()->json([
+                'success' => FALSE,
+                'message' => 'An unexpected error occured'
+            ]);
+        }
+    }
+
+    public function get_customer($token)
+    {
+        $customer = ForgotPassword::leftJoin('customers', 'customer_password_resets.email', '=', 'customers.email')
+                                    ->where('token', $token)
+                                    ->first([
+                                        'customers.id AS customer_id',
+                                        'customer_password_resets.id AS id'
+                                    ]);
+
+        if ( isset($customer->id) ) {
+            return response()->json([
+                'success' => TRUE,
+                'customer_id' => $customer->customer_id,
+                'token_id' => $customer->id
+            ]);
+        } else {
+            return response()->json([
+                'success' => FALSE
+            ]);
+        }
+    }
+
+    public function reset_password(Request $request)
+    {
+        $request->validate([
+            'password' => ['required', 'alpha_num', 'min:8'],
+            'confirmPassword' => ['required', 'alpha_num', 'min:8', 'same:password']
+        ]);
+
+        $customer = Customer::find($request->customerId);
+        $customer_password_reset = ForgotPassword::find($request->token_id);
+
+        if ( isset($customer->id) && isset($customer_password_reset->id) ) {
+            $customer->password = Hash::make($request->password);
+
+            if ($customer->update()) {
+                $customer_password_reset->delete();
+
+                return response()->json([
+                    'success' => TRUE,
+                    'message' => 'Password updated successfully'
+                ]);
+            } else {
+                return response()->json([
+                    'success' => FALSE,
+                    'message' => 'AN unexpected error occured'
+                ]);
+            }
+        } else {
+            return response()->json([
+                'success' => FALSE
+            ]);
+        }
     }
 }

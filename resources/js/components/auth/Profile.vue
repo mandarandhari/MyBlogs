@@ -151,6 +151,10 @@
         },
         created() {
             this.$Progress.start();
+
+            document.title = 'MyBlogs | Profile';
+
+            localStorage.removeItem('articleUrl');
         }
     }
 </script>
