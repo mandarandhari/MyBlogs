@@ -77,6 +77,7 @@
                 },
                 commit: true,
                 payment: function(resolve, reject) {
+                    console.log(process.env.MIX_APP_URL);
                     return new Promise((resolve, reject) => {
                         axios.post('/api/payment/create', {                            
                             return_url: localStorage.getItem('articleUrl') == null ? process.env.MIX_APP_URL + '/home' : process.env.MIX_APP_URL + '/post/' + localStorage.getItem('articleUrl'),
