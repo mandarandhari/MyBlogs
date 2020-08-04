@@ -140,7 +140,7 @@
                 axios.get('/api/getArticle/' + this.$route.params.blogUrl)
                 .then((response) => {
                     if (response.data.success) {
-                        this.bgImage = process.env.MIX_APP_ADMIN_URL + '/storage/articleBanners/' + response.data.article.id + '/' + response.data.article.banner;
+                        this.bgImage =  response.data.article.banner_url;
                         this.article = response.data.article;
                         this.prevArticleExists = response.data.prevArticle != null ? true : false;
                         this.nextArticleExists = response.data.nextArticle != null ? true : false;

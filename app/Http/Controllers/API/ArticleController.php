@@ -31,7 +31,7 @@ class ArticleController extends Controller
     public function get_article_by_url($url)
     {
         $article = Article::where('url', '=', $url)
-                    ->first(['id', 'title', 'url', 'description', 'content', 'meta_title', 'meta_description', 'banner', 'created_at']);
+                    ->first(['id', 'title', 'url', 'description', 'content', 'meta_title', 'meta_description', 'banner_url', 'created_at']);
         
         $prev_article = Article::where('id', '>', $article->id)
                         ->first(['id', 'title', 'url']);
