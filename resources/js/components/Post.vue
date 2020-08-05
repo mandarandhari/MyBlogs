@@ -148,6 +148,8 @@
                         this.nextArticle = this.nextArticleExists ? response.data.nextArticle : {};
                         this.comments = response.data.comments;
 
+                        document.title = 'MyBlogs | ' + this.article.title;
+
                         $('html, body').animate({
                             scrollTop: $('#main-div').offset().top - 50
                         }, 'slow');
@@ -412,8 +414,6 @@
             }
 
             this.checkArticleForPremium();
-
-            document.title = 'MyBlogs | ' + this.article.title;
 
             localStorage.removeItem('articleUrl');
         }
