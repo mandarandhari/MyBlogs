@@ -136,6 +136,11 @@
                     }
                 })
                 .catch((errors) => {
+                    if (errors.response.status == 401) {
+                        this.$store.commit('CustomerLoggedOut');
+                        this.$router.push('/home');
+                    }
+
                     $('.spinner').remove();
                     $('.profile-update-btn').attr('disabled', false);
                     this.updateBtnText = "Update";

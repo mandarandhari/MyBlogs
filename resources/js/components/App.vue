@@ -122,7 +122,10 @@
                     this.$router.push('/home');
                 })
                 .catch((errors) => {
-
+                    if (errors.response.status == 401) {
+                        this.$store.commit('CustomerLoggedOut');
+                        this.$router.push('/home');
+                    }
                 });
             }
         }

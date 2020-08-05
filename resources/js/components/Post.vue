@@ -168,6 +168,12 @@
                 .then((response) => {
                     this.$store.commit('updateProfile', response.data);
                 })
+                .catch(errors => {
+                    if (errors.response.status == 401) {
+                        this.$store.commit('CustomerLoggedOut');
+                        this.$router.push('/home');
+                    }
+                });
             },
             async checkArticleForPremium() {
                 if (this.$store.state.isLoggedIn) {
@@ -288,9 +294,16 @@
                     }, 3000);
                 })
                 .catch((errors) => {
+                    if (errors.response.status == 401) {
+                        this.$store.commit('CustomerLoggedOut');
+                        this.$router.push('/home');
+                    }
+
                     this.destroySpinner('add');
 
-                    this.commentError = errors.response.data.errors.comment[0];
+                    if (errors.response.status == 422) {
+                        this.commentError = errors.response.data.errors.comment[0];
+                    }
                 });
             },
             editComment(comment_id) {
@@ -352,9 +365,16 @@
                     }
                 })
                 .catch((errors) => {
+                    if (errors.response.status == 401) {
+                        this.$store.commit('CustomerLoggedOut');
+                        this.$router.push('/home');
+                    }
+
                     this.destroySpinner('update');
 
-                    this.commentError = errors.response.data.errors.comment[0];
+                    if (errors.response.status == 422) {
+                        this.commentError = errors.response.data.errors.comment[0];
+                    }
                 });
             },
             cancelCommentEdit() {
@@ -396,6 +416,11 @@
                     }
                 })
                 .catch((errors) => {
+                    if (errors.response.status == 401) {
+                        this.$store.commit('CustomerLoggedOut');
+                        this.$router.push('/home');
+                    }
+
                     this.destroySpinner('delete');
                     console.log(errors.response.data);
                 });

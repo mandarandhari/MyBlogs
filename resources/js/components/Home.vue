@@ -77,6 +77,12 @@
                 .then((response) => {
                     this.$store.commit('updateProfile', response.data);
                 })
+                .catch(errors => {
+                    if (errors.response.status == 401) {
+                        this.$store.commit('CustomerLoggedOut');
+                        this.$router.push('/home');
+                    }
+                });
             },
             checkArticleRedirect(url) {
                 if (this.$store.state.isLoggedIn) {
