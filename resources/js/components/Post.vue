@@ -172,6 +172,10 @@
                 })
             },
             async checkArticleForPremium() {
+                if (this.$store.state.isLoggedIn) {
+                    this.getCustomerData();
+                }
+
                 axios.get('/api/checkArticleForPremium/' + this.$route.params.blogUrl)
                 .then((response) => {
                     if ( response.data.success ) {
@@ -408,10 +412,6 @@
         },
         created() {
             this.$Progress.start();
-            
-            if (this.$store.state.isLoggedIn) {
-                this.getCustomerData();
-            }
 
             this.checkArticleForPremium();
 
