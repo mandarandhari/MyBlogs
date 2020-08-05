@@ -11,9 +11,7 @@
                             
                             <h2 class="subheading" v-if="article.description != null">{{ article.description }}</h2>
                             
-                            <span class="meta">Posted by
-                                <a href="#">Start Bootstrap</a>
-                                on {{ article.created_at | dateFormat }}
+                            <span class="meta">Posted on {{ article.created_at | dateFormat }}
                             </span>
                         </div>
                     </div>
