@@ -157,7 +157,7 @@
                     console.log(errors.response);
                 });
             },
-            async getCustomerData() {
+            getCustomerData() {
                 axios.get('/api/getCustomerData', {
                     headers: {
                         'Authorization': 'Bearer ' + this.$store.state.token,
