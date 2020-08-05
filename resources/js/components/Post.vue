@@ -159,8 +159,8 @@
                     console.log(errors.response);
                 });
             },
-            async getCustomerData() {
-                axios.get('/api/getCustomerData', {
+            getCustomerData() {
+                return axios.get('/api/getCustomerData', {
                     headers: {
                         'Authorization': 'Bearer ' + this.$store.state.token,
                         'Content-Type': 'application/json',
@@ -173,7 +173,7 @@
             },
             async checkArticleForPremium() {
                 if (this.$store.state.isLoggedIn) {
-                    this.getCustomerData();
+                    await this.getCustomerData();
                 }
 
                 axios.get('/api/checkArticleForPremium/' + this.$route.params.blogUrl)
