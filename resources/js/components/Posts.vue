@@ -36,7 +36,7 @@
                             <h3 class="post-subtitle" v-if="article.description != null">{{ article.description }}</h3>
                             
                         </a>
-                        <p class="post-meta">Posted by Mandar on {{ article.created_at | dateFormat }}</p>
+                        <p class="post-meta">Posted on {{ article.created_at | dateFormat }}</p>
                     </article>
 
                     <hr>   
