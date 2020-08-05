@@ -37,29 +37,6 @@
                 token: ""
             }
         },
-        methods: {
-            getCustomerDataEnc() {
-                axios.get('/api/getCustomerDataEnc', {
-                    headers: {
-                        'Authorization': 'Bearer ' + this.$store.state.token,
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    }
-                })
-                .then((response) => {
-                    if (response.data.success) {
-                        console.log(response.data.data);
-                        this.data = response.data.data;
-                    }
-                })
-                .catch((errors) => {
-
-                })
-            },
-            redirectHome() {
-                this.$router.push({name: 'home'});
-            }
-        },
         mounted() {
             this.$Progress.finish();
 
