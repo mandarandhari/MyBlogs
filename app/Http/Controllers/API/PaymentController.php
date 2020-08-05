@@ -89,7 +89,8 @@ class PaymentController extends Controller
                     $customer->update();
 
                     Mail::to($customer->email)
-                        ->queue(new PaymentMail($customer));
+                        ->send(new PaymentMail($customer));
+                        //To send mails in queue, replace send() with queue()
 
                     return response()->json([
                         'status' => 'success'

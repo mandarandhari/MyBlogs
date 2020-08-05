@@ -29,10 +29,12 @@ class ContactController extends Controller
 
         if ($contact->save()) {
             Mail::to($request->email)
-                ->queue(new ContactUs($contact));
-                
+                ->send(new ContactUs($contact));
+                //To send mails in queue, replace send() with queue()
+
             Mail::to('admin@myblogs.com')
-                ->queue(new ContactUsAdmin($contact));
+                ->send(new ContactUsAdmin($contact));
+                //To send mails in queue, replace send() with queue()
 
             return response()->json([
                 'success' => TRUE,

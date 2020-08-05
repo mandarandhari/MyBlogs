@@ -37,10 +37,11 @@ class AuthController extends Controller
         if ( $customer->save() ) {
             if ( Auth::attempt( [ 'email' => $request->email, 'password' => $request->password ] ) ) {
                 Mail::to($customer->email)
-                    ->queue(new Registration($customer));
-
+                    ->send(new Registration($customer));
+                    //To send mails in queue, replace send() with queue()
                 Mail::to('admin@myblogs.com')
-                    ->queue(new RegistrationAdmin($customer));
+                    ->send(new RegistrationAdmin($customer));
+                    //To send mails in queue, replace send() with queue()
 
                 return response()->json([
                     'success' => TRUE,
@@ -176,7 +177,8 @@ class AuthController extends Controller
 
         if ($forgot_password->save()) {
             Mail::to($forgot_password->email)
-                ->queue(new ForgotPasswordMail($forgot_password));
+                ->send(new ForgotPasswordMail($forgot_password));
+                //To send mails in queue, replace send() with queue()
 
             return response()->json([
                 'success' => TRUE,
