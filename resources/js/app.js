@@ -54,7 +54,8 @@ const routes = [
     { path: '/profile', name: 'profile', component: require('./components/auth/Profile.vue').default },
     { path: '/payment', name: 'payment', component: require('./components/auth/Payment.vue').default },
     { path: '/forgot-password', name: 'forgot-password', component: require('./components/auth/ForgotPassword.vue').default },
-    { path: '/reset-password', name: 'reset-password', component: require('./components/auth/ResetPassword.vue').default }
+    { path: '/reset-password', name: 'reset-password', component: require('./components/auth/ResetPassword.vue').default },
+    { path: '*', redirect: '/home' }
 ];
 
 const router = new VueRouter({
